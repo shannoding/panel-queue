@@ -1,13 +1,109 @@
+* {
+  box-sizing: border-box;
+}
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: sans-serif;
+  margin:0;
+}
+#root {
+  width:100%;
+  height:100vh;
+}
+.queue-view {
+  padding:1rem;
+  display: flex;
+}
+.queue {
+  padding:1rem;
+  border:1px solid #DDD;
+  height:100%;
+  margin-bottom: 2rem;
+  margin-right:2rem;
+}
+.panel-queue {
+  display: flex;
+  flex-direction: column;
+  width:350px;
+}
+.viewer {
+  padding:1rem;
+  width:100%;
+}
+.entry {
+  padding:0px;
+  box-shadow:0 0 10px #DDD;
+  margin:0.5rem 0;
+  display:flex;
+  font-size:0.8em;
+  align-items: center;
+}
+.entry p {
+  text-align: center;
+  margin:0;
+  padding:1rem;
+  width:30%;
+}
+.options {
+  width:70%;
+  display: flex;
+  justify-content: space-around;
+  list-style:none;
+  padding:0;
+  margin:0;
+}
+  .options li {
+    display: inline-block;
+    padding:1rem;
+  }
+  .options li:hover {
+    text-decoration: underline;
+  }
+.accepted {
+  background:#77dd77;
+}
+.rejected {
+  background:#ff6961;
+}
+.viewing {
+  background:#333;
+  color:white;
+}
+.undecided {
+  background:#DDD;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+
+.viewer {
+  border:1px solid #DDD;
+  display: block;
+  text-align: center;
 }
+.viewer > div {
+  display: flex;
+  flex-direction: row;
+}
+.panel {
+  width:100px;
+  height:275px;
+  margin:0 0.5rem;
+  overflow:hidden;
+  border:3px solid rgb(128, 128, 128);
+}
+.panel img {
+  opacity:0.3;
+  height:100%;
+}
+
+#login {
+  width:100%;
+  height:100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+@media all and (max-width: 1000px) {
+  .queue-view {
+    flex-direction: column;
+  }
+
+  }
