@@ -25,10 +25,7 @@ body {
   flex-direction: column;
   width:350px;
 }
-.viewer {
-  padding:1rem;
-  width:100%;
-}
+
 .entry {
   padding:0px;
   box-shadow:0 0 10px #DDD;
@@ -73,19 +70,37 @@ body {
 }
 
 
+
 .viewer {
+  width:100%;
   border:1px solid #DDD;
   display: block;
   text-align: center;
 }
-.viewer > div {
+.viewer .panels {
   display: flex;
-  flex-direction: row;
+  max-width:100%;
+  overflow-x:scroll;
+  margin:20px 10px;
 }
+.viewer .designBy {
+  background:#333;
+  color:white;
+  margin:0 0 20px 0;
+  padding:20px;
+}
+.viewer .viewer-controls {
+  margin-bottom:20px;
+}
+.viewer .viewer-controls p {
+  margin:5px 0;
+}
+
 .panel {
   width:100px;
+  min-width:100px;
   height:275px;
-  margin:0 0.5rem;
+  margin:5px;
   overflow:hidden;
   border:3px solid rgb(128, 128, 128);
 }
