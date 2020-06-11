@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+
 
 function Panel(props) {
   const r = props.rgb.r;
@@ -23,7 +24,7 @@ function Panels(props) {
   return (<div key={props.id}>{rgbPanels}</div>);
 }
 
-class PanelViewer extends React.Component {
+class PanelViewer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,6 +33,8 @@ class PanelViewer extends React.Component {
       current: 0,
       stackLength: this.props.cueStack.panels.length
     }
+    this.handleNextCue = this.handleNextCue.bind(this);
+    this.handlePrevCue = this.handlePrevCue.bind(this);
   }
 
 
@@ -64,7 +67,7 @@ class PanelViewer extends React.Component {
   }
 }
 
-class Queue extends React.Component {
+class Queue extends Component {
   renderEntry(value, index, acc, rej, view) {
     let classes = "undecided";
     if (value.accepted === null) {
@@ -119,7 +122,8 @@ let QUEUE = [
     { "duration": 5, "panel": [{"r": 0, "g": 100, "b": 0}] },
     { "duration": 5, "panel": [{"r": 0, "g": 0, "b": 100}] },
     ],
-    "accepted": null
+    "accepted": null,
+    "designID": 0
   },
   {
     "name": "Kerry",
@@ -128,7 +132,8 @@ let QUEUE = [
     { "duration": 3, "panel": [{"r": 0, "g": 100, "b": 0}] },
     { "duration": 3, "panel": [{"r": 0, "g": 0, "b": 100}] },
     ],
-    "accepted": null
+    "accepted": null,
+    "designID": 1
   },
   {
     "name": "Lerry",
@@ -137,7 +142,8 @@ let QUEUE = [
     { "duration": 1, "panel": [{"r": 0, "g": 100, "b": 0}] },
     { "duration": 1, "panel": [{"r": 0, "g": 0, "b": 100}] },
     ],
-    "accepted": null
+    "accepted": null,
+    "designID": 2
   },
   {
     "name": "Merry",
@@ -146,7 +152,8 @@ let QUEUE = [
     { "duration": 5, "panel": [{"r": 0, "g": 100, "b": 0}] },
     { "duration": 5, "panel": [{"r": 0, "g": 0, "b": 100}] },
     ],
-    "accepted": null
+    "accepted": null,
+    "designID": 3
   },
   {
     "name": "Nerry the Platypus",
@@ -155,7 +162,8 @@ let QUEUE = [
     { "duration": 3, "panel": [{"r": 0, "g": 100, "b": 0}] },
     { "duration": 3, "panel": [{"r": 0, "g": 0, "b": 100}] },
     ],
-    "accepted": null
+    "accepted": null,
+    "designID": 4
   },
   {
     "name": "Oerry",
@@ -164,11 +172,12 @@ let QUEUE = [
     { "duration": 1, "panel": [{"r": 0, "g": 100, "b": 0}] },
     { "duration": 1, "panel": [{"r": 0, "g": 0, "b": 100}] },
     ],
-    "accepted": null
+    "accepted": null,
+    "designID": 5
   }
 ]
 
-class QueueView extends React.Component {
+class QueueView extends Component {
   constructor(props) {
     super(props);
 
@@ -270,7 +279,7 @@ class QueueView extends React.Component {
   }
 }
 
-class Login extends React.Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
