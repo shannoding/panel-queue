@@ -162,7 +162,7 @@ class QueueView extends Component {
     super(props);
 
     this.state = {
-      queue: QUEUE,
+      queue: [],
       currentViewID: null
     }
 
@@ -174,6 +174,31 @@ class QueueView extends Component {
     this.handleReject = this.handleReject.bind(this);
     this.handleView = this.handleView.bind(this);
 
+  }
+
+  componentDidMount() {
+    // Initialize the App Client
+    this.client = Stitch.initializeDefaultAppClient("pausch-bridge-pmulj");
+    // Get a MongoDB Service Client
+    // This is used for logging in and communicating with Stitch
+    const mongodb = this.client.getServiceClient(
+      RemoteMongoClient.factory,
+      "mongodb-atlas"
+    );
+    // Get a reference to the todo database
+    this.collection = mongodb.db("bridge").collection("designs");
+    this.client.auth
+      .loginWithCredential(new AnonymousCredential())
+      .then(() => console.log("Authenticated"))
+      .catch(console.error);
+  }
+
+  getRequests() {
+    this.collection
+      .find()
+      .toArray()
+      .then((results) => this.setState({ queue: results }))
+      .catch((err) => console.error("Failed to get requests" + { err }));
   }
 
   removeDesignID(id) {
@@ -284,10 +309,12 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pass: "test",
       loggedIn: false,
       value: ""
     }
+    this.handleChange = this.handleChange.bind(this);
+    this.checkLogin = this.checkLogin.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
   }
   handleChange(event) {
     this.setState({
@@ -295,9 +322,8 @@ class Login extends Component {
     })
   }
 
-  handleLogin(event) {
-    event.preventDefault();
-    if (this.state.value === this.state.pass) {
+  checkLogin(value) {
+    if (true) {
       this.setState({
         loggedIn:true
       });
@@ -308,6 +334,11 @@ class Login extends Component {
         value: ""
       });
     }
+  }
+
+  handleLogin(event) {
+    event.preventDefault();
+    this.checkLogin(this.state.value);
   }
 
   render() {

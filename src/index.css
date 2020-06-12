@@ -11,14 +11,12 @@ body {
 }
 .queue-view {
   padding:1rem;
-  display: flex;
 }
 .queue {
   padding:1rem;
   border:1px solid #DDD;
   height:100%;
   margin-bottom: 2rem;
-  margin-right:2rem;
 }
 .panel-queue {
   display: flex;
