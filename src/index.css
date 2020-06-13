@@ -17,6 +17,8 @@ body {
   border:1px solid #DDD;
   height:100%;
   margin-bottom: 2rem;
+  height:250px;
+  overflow-y: scroll;
 }
 .panel-queue {
   display: flex;
@@ -114,9 +116,23 @@ body {
   justify-content: center;
   align-items: center;
 }
+#login input[type="password"] {
+  margin-left:10px;
+}
+#login input {
+  padding:5px;
+}
+
+button {
+  padding: 5px;
+}
+
+.loadmore {
+  position: sticky;
+  top:0;
+  margin-bottom:10px;
+  text-align: right;
+}
 @media all and (max-width: 1000px) {
-  .queue-view {
-    flex-direction: column;
-  }
 
   }

@@ -129,7 +129,7 @@ let QUEUE = [
     },
    {
         "_id":  {"$oid":"5edc39064754c6a2c030e10g"}, // unique for each request
-        "user_id":  "Srinu Lade 2",
+        "user_id":  "Srinu Lade Srinu Lade 2",
         "design":   {
             "0":{
                 "colors":{"0":"#808080","1":"#808080","2":"#808080","3":"#808080","4":"#808080","5":"#808080","6":"#808080","7":"#808080","8":"#808080","9":"#808080","10":"#808080","11":"#808080","12":"#808080","13":"#808080","14":"#808080","15":"#808080","16":"#808080","17":"#808080","18":"#808080","19":"#808080","20":"#808080","21":"#808080","22":"#808080","23":"#808080","24":"#808080","25":"#808080","26":"#808080","27":"#808080","28":"#808080","29":"#808080","30":"#808080","31":"#808080","32":"#808080","33":"#808080","34":"#808080","35":"#808080","36":"#808080","37":"#808080","38":"#808080","39":"#808080","40":"#808080","41":"#808080","42":"#808080","43":"#808080","44":"#808080","45":"#808080","46":"#808080","47":"#808080","48":"#808080","49":"#808080","50":"#808080","51":"#808080"},
@@ -162,7 +162,7 @@ class QueueView extends Component {
     super(props);
 
     this.state = {
-      queue: [],
+      queue: QUEUE,
       currentViewID: null
     }
 
@@ -177,28 +177,29 @@ class QueueView extends Component {
   }
 
   componentDidMount() {
-    // Initialize the App Client
-    this.client = Stitch.initializeDefaultAppClient("pausch-bridge-pmulj");
-    // Get a MongoDB Service Client
-    // This is used for logging in and communicating with Stitch
-    const mongodb = this.client.getServiceClient(
-      RemoteMongoClient.factory,
-      "mongodb-atlas"
-    );
-    // Get a reference to the todo database
-    this.collection = mongodb.db("bridge").collection("designs");
-    this.client.auth
-      .loginWithCredential(new AnonymousCredential())
-      .then(() => console.log("Authenticated"))
-      .catch(console.error);
+    // // Initialize the App Client
+    // this.client = Stitch.initializeDefaultAppClient("pausch-bridge-pmulj");
+    // // Get a MongoDB Service Client
+    // // This is used for logging in and communicating with Stitch
+    // const mongodb = this.client.getServiceClient(
+    //   RemoteMongoClient.factory,
+    //   "mongodb-atlas"
+    // );
+    // // Get a reference to the todo database
+    // this.collection = mongodb.db("bridge").collection("designs");
+    // this.client.auth
+    //   .loginWithCredential(new AnonymousCredential())
+    //   .then(() => console.log("Authenticated"))
+    //   .catch(console.error);
   }
 
   getRequests() {
-    this.collection
-      .find()
-      .toArray()
-      .then((results) => this.setState({ queue: results }))
-      .catch((err) => console.error("Failed to get requests" + { err }));
+    alert("Get requests");
+    // this.collection
+    //   .find()
+    //   .toArray()
+    //   .then((results) => this.setState({ queue: results }))
+    //   .catch((err) => console.error("Failed to get requests" + { err }));
   }
 
   removeDesignID(id) {
@@ -293,6 +294,7 @@ class QueueView extends Component {
     return (
       <div className="queue-view">
         <div className="queue">
+        <div className="loadmore"><button onClick={() => this.getRequests()}>Load more</button></div>
           <Queue queue={this.state.queue} 
                 onAccept={(i) => this.handleAccept(i)}
                 onReject={(i) => this.handleReject(i)} 
@@ -323,13 +325,13 @@ class Login extends Component {
   }
 
   checkLogin(value) {
-    if (true) {
+    if (value === process.env.REACT_APP_PASS) {
       this.setState({
         loggedIn:true
       });
     }
     else {
-      alert('Incorrect password. Hint: the password is "test"')
+      alert('Incorrect password.')
       this.setState({
         value: ""
       });
@@ -349,7 +351,7 @@ class Login extends Component {
     <div id="login">
       <form onSubmit={(e) => this.handleLogin(e)}>
         <label>Password:
-        <input type="text" name="password" 
+        <input type="password" name="password" 
             value={this.state.value} onChange={(e) => this.handleChange(e)} />
         </label>
         <input type="submit" value="Submit" />
