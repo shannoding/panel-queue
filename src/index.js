@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import {
+  Stitch,
+  RemoteMongoClient,
+  AnonymousCredential,
+} from "mongodb-stitch-browser-sdk";
 import './index.css';
 
 
@@ -57,7 +62,7 @@ class PanelViewer extends Component {
       <Panels panels={currentCue.colors} />
       <div className="viewer-controls">
       <p>Cue {c} of {Object.keys(cueStack).length}</p>
-      <p>Duration: {currentCue.duration['$numberInt']}s</p>
+      <p>Duration: {currentCue.duration}s</p>
       <button onClick={() => this.handlePrevCue()}>prev</button>
       <button onClick={() => this.handleNextCue()}>next</button>
       </div>
@@ -89,13 +94,13 @@ class Queue extends Component {
     const queue = Object.values(this.props.queue);
     const entries = queue.map(
       (entry) => {
-        return <QueueEntry did={entry['_id']['$oid']} 
+        return <QueueEntry did={entry['_id']} 
                           uid={entry['user_id']}
                           acc={this.props.onAccept}
                           rej={this.props.onReject}
                           view={this.props.onView} 
                           currentView={this.props.view}
-                          key={entry['_id']['$oid']} />
+                          key={entry['_id']} />
       }
     );
     if (queue.length === 0) {
@@ -162,10 +167,13 @@ class QueueView extends Component {
     super(props);
 
     this.state = {
-      queue: QUEUE,
+      queue: [],
       currentViewID: null
     }
 
+    // this.getRequests();
+
+    this.getRequests = this.getRequests.bind(this);
     this.removeDesignID = this.removeDesignID.bind(this);
     this.removeFromQueue = this.removeFromQueue.bind(this);
     this.getEntryFromID = this.getEntryFromID.bind(this);
@@ -177,43 +185,58 @@ class QueueView extends Component {
   }
 
   componentDidMount() {
-    // // Initialize the App Client
-    // this.client = Stitch.initializeDefaultAppClient("pausch-bridge-pmulj");
-    // // Get a MongoDB Service Client
-    // // This is used for logging in and communicating with Stitch
-    // const mongodb = this.client.getServiceClient(
-    //   RemoteMongoClient.factory,
-    //   "mongodb-atlas"
-    // );
-    // // Get a reference to the todo database
-    // this.collection = mongodb.db("bridge").collection("designs");
-    // this.client.auth
-    //   .loginWithCredential(new AnonymousCredential())
-    //   .then(() => console.log("Authenticated"))
-    //   .catch(console.error);
+    // Initialize the App Client
+    this.client = Stitch.initializeDefaultAppClient("pausch-bridge-pmulj");
+    // Get a MongoDB Service Client
+    // This is used for logging in and communicating with Stitch
+    const mongodb = this.client.getServiceClient(
+      RemoteMongoClient.factory,
+      "mongodb-atlas"
+    );
+    // Get a reference to the todo database
+    this.collection = mongodb.db("bridge").collection("designs");
+    this.client.auth
+      .loginWithCredential(new AnonymousCredential())
+      .then(() => {
+        this.getRequests();
+        console.log("Authenticated")
+      })
+      .catch(console.error);
+
+      console.log(this.collection);
   }
 
   getRequests() {
-    alert("Get requests");
-    // this.collection
-    //   .find()
-    //   .toArray()
-    //   .then((results) => this.setState({ queue: results }))
-    //   .catch((err) => console.error("Failed to get requests" + { err }));
+    this.collection
+      .find()
+      .toArray()
+      .then((results) => {
+        const queue = results.map((res) => {
+            res['_id'] = res['_id'].toHexString();
+            return res;
+          })
+        this.setState({ 
+          queue: queue
+        });
+        console.log(queue);
+      })
+      .catch((err) => console.error("Failed to get requests" + { err }));
   }
 
   removeDesignID(id) {
     // go to database and remove with designID
+    // console.log(new ObjectId(id));
+    this.collection.deleteOne({ '_id': {'$oid': id} });
 
   }
 
   removeFromQueue(id, queue) {
-    return queue.filter(obj => (obj['_id']['$oid'] !== id));
+    return queue.filter(obj => (obj['_id'] !== id));
   }
 
   getEntryFromID(id, queue) {
     for (var i = 0; i < queue.length; i++) {
-      if (queue[i]['_id']['$oid'] === id) {
+      if (queue[i]['_id'] === id) {
         return queue[i];
       }
     }
@@ -286,7 +309,7 @@ class QueueView extends Component {
     }
     else {
       const entry = this.getEntryFromID(this.state.currentViewID, this.state.queue);
-      currentView = <PanelViewer entry={entry} key={entry['_id']['$oid']} />
+      currentView = <PanelViewer entry={entry} key={entry['_id']} />
     }
 
 
