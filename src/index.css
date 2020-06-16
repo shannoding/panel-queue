@@ -116,11 +116,9 @@ body {
   justify-content: center;
   align-items: center;
 }
-#login input[type="password"] {
-  margin-left:10px;
-}
 #login input {
   padding:5px;
+  margin-bottom:10px;
 }
 
 button {

@@ -138,24 +138,8 @@ class QueueView extends Component {
   }
 
   componentDidMount() {
-    // Initialize the App Client
-    this.client = Stitch.initializeDefaultAppClient("pausch-bridge-pmulj");
-    // Get a MongoDB Service Client
-    // This is used for logging in and communicating with Stitch
-    const mongodb = this.client.getServiceClient(
-      RemoteMongoClient.factory,
-      "mongodb-atlas"
-    );
-    // Get a reference to the todo database
-    this.collection = mongodb.db("bridge").collection("designs");
-    this.client.auth
-      .loginWithCredential(new UserPasswordCredential("scottylabscmu@gmail.com", "Carnegie123"))
-      .then(() => {
-        this.getRequests();
-        console.log("Authenticated")
-      })
-      .catch(console.error);
-
+    this.collection = this.props.collection;
+    this.getRequests();
   }
 
   getRequests() {
@@ -189,7 +173,6 @@ class QueueView extends Component {
         return queue[i];
       }
     }
-    throw "Invalid design ID";
   }
 
   async sendTheme(id) {
@@ -204,6 +187,7 @@ class QueueView extends Component {
     });
 
     const ans = await res.json();
+    console.log(ans);
   }
 
   handleAccept(id) {
@@ -281,49 +265,73 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loggedIn: false,
-      value: ""
+      username: "",
+      password: ""
     }
     this.handleChange = this.handleChange.bind(this);
     this.checkLogin = this.checkLogin.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
   }
+
+  componentDidMount() {
+    // Initialize the App Client
+    this.client = Stitch.initializeDefaultAppClient("pausch-bridge-pmulj");
+    // Get a MongoDB Service Client
+    // This is used for logging in and communicating with Stitch
+    const mongodb = this.client.getServiceClient(
+      RemoteMongoClient.factory,
+      "mongodb-atlas"
+    );
+    // Get a reference to the todo database
+    this.collection = mongodb.db("bridge").collection("designs");
+  }
+
   handleChange(event) {
+    const target = event.target;
     this.setState({
-      value: event.target.value
+      [target.name]: target.value
     })
   }
 
-  checkLogin(value) {
-    if (value === process.env.REACT_APP_PASS) {
-      this.setState({
-        loggedIn:true
+  checkLogin(user, pass) {
+    this.client.auth
+      .loginWithCredential(new UserPasswordCredential(user, pass))
+      .then(() => {
+        console.log("Authenticated");
+        ReactDOM.render(
+          <QueueView collection={this.collection} />,
+          document.getElementById('root')
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+        alert('Incorrect password.')
+        this.setState({
+          username: "",
+          password: ""
+        });
       });
-    }
-    else {
-      alert('Incorrect password.')
-      this.setState({
-        value: ""
-      });
-    }
+
   }
 
   handleLogin(event) {
     event.preventDefault();
-    this.checkLogin(this.state.value);
+    this.checkLogin(this.state.username, this.state.password);
   }
 
   render() {
-    if (this.state.loggedIn) {
-      return <QueueView />;
-    }
     return (
     <div id="login">
       <form onSubmit={(e) => this.handleLogin(e)}>
-        <label>Password:
+        <label>Username:</label><br />
+        <input type="text" name="username" 
+            value={this.state.username} onChange={(e) => this.handleChange(e)} />
+        <br />
+
+        <label>Password:</label><br />
         <input type="password" name="password" 
-            value={this.state.value} onChange={(e) => this.handleChange(e)} />
-        </label>
+            value={this.state.password} onChange={(e) => this.handleChange(e)} />
+        <br />
         <input type="submit" value="Submit" />
       </form>
 
