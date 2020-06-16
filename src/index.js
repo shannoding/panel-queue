@@ -5,7 +5,7 @@ import {
   RemoteMongoClient,
   UserPasswordCredential
 } from "mongodb-stitch-browser-sdk";
-import './index.css';
+import './intermediate.css';
 
 
 function Panel(props) {
